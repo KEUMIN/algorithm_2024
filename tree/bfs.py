@@ -8,6 +8,10 @@ class Node:
 
 def bfs(root):
     result = []
+    
+    if root is None:
+        return result
+    
     tree = deque()
     tree.append(root)
     
