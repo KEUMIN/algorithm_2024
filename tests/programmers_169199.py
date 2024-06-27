@@ -13,23 +13,19 @@ def solution(board):
                 q.append((i, j, 0))
                 v[i][j] = True
     
-    dx = [0, -1, 0, 1]
-    dy = [-1, 0, 1, 0]
-    
+    dr = [(0, 1), (0, -1), (-1, 0), (1, 0)]
+        
     def bfs():
         while q:
             x, y, d = q.popleft()
-            for i in range(len(dx)):
+            for dx, dy in dr:
                 mx = x
                 my = y
-                while 0 <= mx and mx < rl and 0 <= my and my < cl and board[mx][my] != 'D':
-                    mx += dx[i]
-                    my += dy[i]
-                    
-                mx -= dx[i]
-                my -= dy[i]
+                while 0 <= mx + dx < rl and 0 <= my + dy < cl and board[mx + dx][my + dy] != 'D':
+                    mx += dx
+                    my += dy
                 
-                if v[mx][my] == True:
+                if v[mx][my]:
                     continue
                 elif board[mx][my] == 'G':
                     return d + 1
