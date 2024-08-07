@@ -1,6 +1,3 @@
-dungeons = [[80,20],[50,40],[30,10]]
-k = 80
-
 def dfs(cur_k, dungeons, count, visited):
     result = count
     
@@ -15,6 +12,3 @@ def dfs(cur_k, dungeons, count, visited):
 def solution(k, dungeons):
     visited = [False] * len(dungeons)
     return dfs(k, dungeons, 0, visited)
-
-    
-print(solution(k, dungeons))
