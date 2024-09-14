@@ -14,7 +14,7 @@ def solution(info, edges):
         visit.update(tree[node])
         for n in visit:
             if info[n]:
-                if sheep != wolves + 1:
+                if sheep > wolves + 1:
                     queue.append((n, sheep, wolves + 1, visit - {n}))
             else:
                     queue.append((n, sheep + 1, wolves, visit - {n}))
