@@ -1,11 +1,11 @@
 # 프로그래머스 - 금과 은 운반하기 (LV3) : https://school.programmers.co.kr/learn/courses/30/lessons/86053
 # 사용 알고리즘 : 이진탐색
 # 인사이트 : 시간을 중심으로 생각해서 0부터 최대 시간 사이 이진탐색으로 최소 시간을 찾는 것이 포인트
+#          그리고 배달 가능 여부 구하는 함수 도출 또한 핵심.
 
 
 def solution(a, b, g, s, w, t):
-
-    def can_deliver_in_time(mid):
+    def can_move_in(mid):
         total_gold, total_silver, total = 0, 0, 0
 
         for i in range(len(g)):
@@ -24,15 +24,16 @@ def solution(a, b, g, s, w, t):
 
         return total_gold >= a and total_silver >= b and total >= a + b
 
-    left, right = 0, int(1e10)  # 충분히 큰 값을 설정
+    left, right = 0, int(1e15)
     answer = right
 
     while left <= right:
-        mid = (left + right) // 2
-        if can_deliver_in_time(mid):
-            answer = mid
+        mid = (right - left) // 2
+        if can_move_in(mid):
             right = mid - 1
+            answer = mid
         else:
             left = mid + 1
+            answer = mid
 
     return answer
