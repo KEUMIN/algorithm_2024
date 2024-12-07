@@ -5,20 +5,38 @@
 
 
 def solution(n, costs):
+    parents = [i for i in range(len(costs))]
+    rank = [0] * len(costs)
 
+    num_of_paths = 0
+    tot_cost = 0
+
+    for cost in costs:
+        if num_of_paths == len(costs) - 1:
+            return num_of_paths
         x, y, c = cost
         if find(x, parents) != find(y, parents):
+            union(x, y, rank, parents)
+            tot_cost += c
+            num_of_paths += 1
+
+    return tot_cost
 
 
 def find(x, parents):
     if parents[x] == x:
+        return x
     parents[x] = find(parents[x], parents)
     return parents[x]
 
 
+def union(x, y, rank, parents):
+    root_x = parents[x]
+    root_y = parents[y]
 
     if rank[root_x] > rank[root_y]:
         parents[root_y] = root_x
+    elif rank[root_y] > rank[root_x]:
         parents[root_x] = root_y
     else:
         parents[root_y] = root_x
