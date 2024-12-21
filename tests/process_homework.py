@@ -1,5 +1,5 @@
 # 프로그래머스 - 과제 진행하기 : https://school.programmers.co.kr/learn/courses/30/lessons/176962
-# 사용 알고리즘 : 브루트 포스???
+# 사용 알고리즘 : 그리디 & 스택
 def solution(plans):
     convert_plan_times(plans)
     plans.sort(key=lambda x: x[1])
@@ -18,7 +18,6 @@ def solution(plans):
     answer.append(plans[-1][0])
     while stack:
         answer.append(stack.pop()[0])
-    print(answer)
     return answer
 
 
