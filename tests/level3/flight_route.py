@@ -6,30 +6,21 @@ from collections import defaultdict
 
 def solution(tickets):
     graph = defaultdict(list)
-    used = defaultdict(bool)
 
-    for ticket in tickets:
-        f, t = ticket
+    # 그래프 생성 및 정렬
+    for f, t in tickets:
         graph[f].append(t)
-        used[f + t] = False
+    for key in graph:
+        graph[key].sort(reverse=True)  # 역순 정렬하여 pop()으로 처리
 
-    for ls in graph.values():
-        ls.sort()
+    route = []  # 최종 경로를 저장할 리스트
 
-    def dfs(start, route):
-        if all(v for v in used.values()):
-            return route[:]
+    def dfs(start):
+        # 현재 공항에서 갈 수 있는 경로를 모두 탐색
+        while graph[start]:
+            next_dest = graph[start].pop()  # 정렬된 상태에서 pop()
+            dfs(next_dest)
+        route.append(start)  # 경로 추가
 
-        answer = []
-        for end in graph[start]:
-            if not used[start + end]:
-                route.append(end)
-                used[start + end] = True
-                answer = dfs(end, route)
-
-        return answer
-
-    return dfs("ICN", ["ICN"])
-
-
-print(solution([["ICN", "JFK"], ["HND", "IAD"], ["JFK", "HND"]]))
+    dfs("ICN")
+    return route[::-1]  # 경로를 뒤집어서 반환
