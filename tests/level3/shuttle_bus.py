@@ -60,28 +60,28 @@ def convert_to_time(min):
     )
 
 
-print(
-    solution(
-        10,
-        60,
-        45,
-        [
-            "23:59",
-            "23:59",
-            "23:59",
-            "23:59",
-            "23:59",
-            "23:59",
-            "23:59",
-            "23:59",
-            "23:59",
-            "23:59",
-            "23:59",
-            "23:59",
-            "23:59",
-            "23:59",
-            "23:59",
-            "23:59",
-        ],
-    )
-)
+def answer_solution(n, t, m, timetable):
+    # 시간을 분으로 변환 후 정렬
+    crew_times = sorted(int(time[:2]) * 60 + int(time[3:]) for time in timetable)
+    shuttle_time = 540  # 첫 셔틀 시간 (09:00)
+
+    for _ in range(n):
+        # 현재 셔틀에 태울 수 있는 크루들
+        available_crews = [time for time in crew_times if time <= shuttle_time]
+
+        if len(available_crews) > m:  # 정원이 넘치면
+            crew_times = crew_times[m:]  # m명만 태우고 나머지 유지
+        else:  # 정원이 안 넘치면
+            crew_times = crew_times[len(available_crews) :]
+
+        # 마지막 셔틀이면 조건 확인
+        if _ == n - 1:
+            if len(available_crews) >= m:
+                # 마지막 셔틀이 꽉 찬 경우, 마지막 태운 사람보다 1분 빠르게 도착
+                return f"{(available_crews[m - 1] - 1) // 60:02}:{(available_crews[m - 1] - 1) % 60:02}"
+            else:
+                # 정원이 남는 경우, 셔틀 시간에 도착
+                return f"{shuttle_time // 60:02}:{shuttle_time % 60:02}"
+
+        # 다음 셔틀 시간 갱신
+        shuttle_time += t
