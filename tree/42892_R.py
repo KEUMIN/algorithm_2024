@@ -6,50 +6,58 @@ class TreeNode:
         self.left = None
         self.right = None
 
-def insert(x, y, i, parent):
-    if x < parent.x:
-        if not parent.left:
-            parent.left = TreeNode(x, y, i)
-            return
-        else:
-            insert(x, y, i, parent.left)
-    else:
-        if not parent.right:
-            parent.right = TreeNode(x, y, i)
-            return
-        else:
-            insert(x, y, i, parent.right)
 
-def pre_order(arr, node):
-    arr.append(node.idx)
-    if node.left:
-        pre_order(arr, node.left)
-    if node.right:
-        pre_order(arr, node.right)
+def insert_iter(x, y, i, root):
+    cur = root
+    while True:
+        if x < cur.x:
+            if cur.left is None:
+                cur.left = TreeNode(x, y, i)
+                return
+            cur = cur.left
+        else:
+            if cur.right is None:
+                cur.right = TreeNode(x, y, i)
+                return
+            cur = cur.right
 
-def post_order(arr, node):
-    if node.left:
-        post_order(arr, node.left)
-    if node.right:
-        post_order(arr, node.right)
-    arr.append(node.idx)
+
+def preorder_iter(root):
+    res = []
+    stack = [root]
+    while stack:
+        node = stack.pop()
+        res.append(node.idx)
+        if node.right:
+            stack.append(node.right)
+        if node.left:
+            stack.append(node.left)
+    return res
+
+
+def postorder_iter(root):
+    res = []
+    stack = [root]
+    while stack:
+        node = stack.pop()
+        res.append(node.idx)
+        if node.left:
+            stack.append(node.left)
+        if node.right:
+            stack.append(node.right)
+    return res[::-1]
+
 
 def solution(nodeinfo):
-    nodes = [[i + 1, ni[0], ni[1]]  for i, ni in enumerate(nodeinfo)]
-    nodes.sort(key=lambda x: (-1 * x[2], x[1]))
+    nodes = [[i + 1, ni[0], ni[1]] for i, ni in enumerate(nodeinfo)]
+    nodes.sort(key=lambda v: (-v[2], v[1]))
 
     root = TreeNode(nodes[0][1], nodes[0][2], nodes[0][0])
+
     for i in range(1, len(nodes)):
         idx, x, y = nodes[i]
-        insert(x, y, idx, root)
+        insert_iter(x, y, idx, root)
 
-    pre_arr = []
-    pre_order(pre_arr, root)
-
-    post_arr = []
-    post_order(post_arr, root)
-
+    pre_arr = preorder_iter(root)
+    post_arr = postorder_iter(root)
     return [pre_arr, post_arr]
-
-
-print(solution([[5,3],[11,5],[13,3],[3,5],[6,1],[1,3],[8,6],[7,2],[2,2]]))
