@@ -3,41 +3,37 @@ from itertools import permutations
 
 def solution(n, weak, dist):
     L = len(weak)
-    # 원형 → 선형으로 펼치기
-    ext = weak + [w + n for w in weak]
+    # 원형을 일자로 펴기: weak[i] 뒤에 weak[i]+n을 이어붙임
+    linear = weak + [w + n for w in weak]
 
-    answer = float("inf")
+    # 최소 투입 인원 탐색: 1명 ~ 모든 친구
+    for k in range(1, len(dist) + 1):
+        # 친구 k명을 어떤 순서로 투입할지 모든 순열 시도
+        for friends in permutations(dist, k):
+            # 시작점(취약 지점) L개 모두 시도
+            for start in range(L):
+                cnt = 1  # 현재 사용 중인 친구 수 (friends[cnt-1] 사용 중)
+                reach = (
+                    linear[start] + friends[cnt - 1]
+                )  # 이 친구가 커버 가능한 최우측 지점
+                ok = True
 
-    # 시작 인덱스를 weak의 각 위치로
-    for start in range(L):
-        segment = ext[start : start + L]
-
-        # 투입 친구 수를 1명부터 증가
-        for k in range(1, len(dist) + 1):
-            # k명 뽑아 순서(방향)대로 배치 (시계/반시계는 "시작점 회전" + "친구 순열"로 커버)
-            for friends in permutations(dist, k):
-                used = 1  # 현재 사용하는 친구 수
-                # 첫 친구가 덮을 수 있는 한계
-                limit = segment[0] + friends[0]
-
-                # 모든 취약 지점을 왼쪽→오른쪽으로 커버 가능한지 확인
-                for pos in segment:
-                    if pos > limit:
-                        used += 1
-                        if used > k:
+                # start부터 start+L-1까지 L개의 취약지점을 모두 커버 가능한지 체크
+                for idx in range(start, start + L):
+                    if linear[idx] > reach:  # 현재 친구로 못 덮으면 다음 친구 투입
+                        cnt += 1
+                        if cnt > k:  # 준비한 k명을 초과하면 실패
+                            ok = False
                             break
-                        limit = pos + friends[used - 1]
-                else:
-                    # 모두 커버 성공
-                    answer = min(answer, k)
-                    # 이 시작점에 대해 k명이면 더 적은 수는 이미 앞에서 시도했으므로 탈출
-                    break
+                        reach = (
+                            linear[idx] + friends[cnt - 1]
+                        )  # 새 친구의 도달 한계 갱신
 
-            # 이미 k명으로 성공했다면 다음 시작점으로
-            if answer == k:
-                break
+                if ok:
+                    return k
 
-    return -1 if answer == float("inf") else answer
+    # 어떤 경우로도 덮지 못함
+    return -1
 
 
 solution(12, [1, 5, 6, 10], [1, 2, 3, 4])
