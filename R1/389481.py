@@ -16,11 +16,11 @@ def idx_of(s):
     return get_sum(L - 1) + pos_within_len
 
 
-def str_at_idx(x):
+def str_at_idx(index):
     L = 1
-    while get_sum(L) < x:
+    while get_sum(L) < index:
         L += 1
-    off = x - get_sum(L - 1) - 1
+    off = index - get_sum(L - 1) - 1
     arr = []
     for i in range(L - 1, -1, -1):
         arr.append(chr(97 + (off % 26)))
